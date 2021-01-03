@@ -4,6 +4,8 @@
  */
 'use strict'
 
+var _ = require('lodash')
+
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
@@ -16,37 +18,75 @@ var rule = require('../../../lib/rules/only-src-relative-imports'),
 //------------------------------------------------------------------------------
 
 var errors = [{ messageId: 'onlySrcRelative' }]
+var filename = '/checkout/src/dir/oneFile.js'
 var ruleTester = new RuleTester({
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
     ecmaFeatures: { modules: true },
+    __mockSrcAliasPath: '/checkout/src',
   },
 })
-ruleTester.run('only-src-relative-imports', rule, {
-  valid: [
-    "import myName from 'vue'",
-    "import myName from '@/components/App.vue'",
-    // TODO: Detect relative filenames
-    "import myName from 'myFile.js'",
-  ],
+var importSpecifiers = [
+  'defaultExport',
+  '* as name',
+  '{ export1 }',
+  '{ export1 as alias1 }',
+  '{ export1, export2 }',
+  '{ foo, bar }',
+  '{ export1, export2 as alias2 }',
+  'defaultExport, { export1 }',
+  'defaultExport, * as name',
+]
 
-  invalid: [
-    {
-      code: "import myName from '../otherDir/myFile.js'",
-      errors: errors,
-    },
-    {
-      code: "import myName from './otherDir/myFile.js'",
-      errors: errors,
-    },
-    {
-      code: "import myName from 'otherDir/myFile.js'",
-      errors: errors,
-    },
-    {
-      code: "import myName from 'otherDir/@/myFile.js'",
-      errors: errors,
-    },
-  ],
-})
+var sources = [
+  // TODO: Detect relative filenames
+  'myFile.js',
+  'vue',
+  '@/components/App.vue',
+  ['../../otherDir/myFile.js', '../../otherDir/myFile.js'],
+  ['../otherDir/myFile.js', '@/otherDir/myFile.js'],
+  ['./otherDir/myFile.js', '@/dir/otherDir/myFile.js'],
+  ['otherDir/myFile.js', '@/dir/otherDir/myFile.js'],
+  ['otherDir/@/myFile.js', '@/dir/otherDir/@/myFile.js'],
+]
+
+function buildImportStmt(specifier, source, isDynamic) {
+  if (specifier) {
+    if (isDynamic) {
+      return `import ${specifier} from '${source}'`
+    } else {
+      return `var ${specifier} = import('${source}')`
+    }
+  } else {
+    if (isDynamic) {
+      return `import '${source}'`
+    } else {
+      return `import('${source}')`
+    }
+  }
+}
+
+function getTable() {
+  var valids = []
+  var invalids = []
+  for (var isDynamic in [false, true]) {
+    for (var source of sources) {
+      for (var importSpecifier of importSpecifiers) {
+        if (_.isArray(source)) {
+          invalids.push({
+            code: buildImportStmt(importSpecifier, source[0], isDynamic),
+            output: buildImportStmt(importSpecifier, source[1], isDynamic),
+            filename: filename,
+            errors: errors,
+          })
+        } else {
+          valids.push(buildImportStmt(importSpecifier, source, isDynamic))
+        }
+      }
+    }
+  }
+  return { valid: valids, invalid: invalids }
+}
+
+ruleTester.run('only-src-relative-imports', rule, getTable())
