@@ -6,6 +6,7 @@
 
 Vue CLI defines at sign (`@`) as an alias to `src/`, allowing for src-relative imports.
 This plugin standardizes relative imports to use this alias when possible.
+
 Fixes importing from `../../components/MyComponent.vue` to `@/components/MyComponent.vue`.
 
 ## Installation
