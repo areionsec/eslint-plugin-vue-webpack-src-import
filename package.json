@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-vue-webpack-src-import",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Standardizes relative imports to use Vue's src path alias",
   "keywords": [
     "eslint",
