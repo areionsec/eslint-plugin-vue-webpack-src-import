@@ -4,6 +4,7 @@
 [![GitHub](https://img.shields.io/github/license/areionsec/eslint-plugin-vue-webpack-src-import)](https://github.com/areionsec/eslint-plugin-vue-webpack-src-import/blob/master/LICENSE.txt)
 [![npm](https://img.shields.io/npm/v/eslint-plugin-vue-webpack-src-import)](https://www.npmjs.com/package/eslint-plugin-vue-webpack-src-import)
 [![nycrc config on GitHub](https://img.shields.io/nycrc/areionsec/eslint-plugin-vue-webpack-src-import?config=.nycrc.json)](https://github.com/areionsec/eslint-plugin-vue-webpack-src-import/blob/master/.nycrc.json)
+[![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/areionsec/eslint-plugin-vue-webpack-src-import)](https://lgtm.com/projects/g/areionsec/eslint-plugin-vue-webpack-src-import/)
 
 Vue CLI defines at sign (`@`) as an alias to `src/`, allowing for src-relative imports.
 This plugin standardizes relative imports to use this alias when possible.
