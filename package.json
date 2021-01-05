@@ -12,6 +12,10 @@
     "at-sign"
   ],
   "author": "Hod Bin Noon",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/areionsec/eslint-plugin-vue-webpack-src-import.git"
+  },
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint '**/*.js' --ignore-pattern node_modules/",
