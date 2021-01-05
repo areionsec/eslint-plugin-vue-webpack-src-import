@@ -5,6 +5,8 @@
 'use strict'
 
 var _ = require('lodash')
+var resolve = require('resolve')
+var simple = require('simple-mock')
 
 //------------------------------------------------------------------------------
 // Requirements
@@ -39,17 +41,34 @@ var importSpecifiers = [
   'defaultExport, * as name',
 ]
 
+var installedPackages = [
+  'vue',
+  'vue/something',
+  '@vue-cli',
+  '@vue-cli/something',
+]
 var sources = [
-  // TODO: Detect relative filenames
-  'myFile.js',
   'vue',
   '@/components/App.vue',
+  '@vue-cli',
+  '@vue-cli/something',
+  'vue/something',
+  ['myFile.js', '@/dir/myFile.js'],
   ['../../otherDir/myFile.js', '../../otherDir/myFile.js'],
   ['../otherDir/myFile.js', '@/otherDir/myFile.js'],
   ['./otherDir/myFile.js', '@/dir/otherDir/myFile.js'],
   ['otherDir/myFile.js', '@/dir/otherDir/myFile.js'],
   ['otherDir/@/myFile.js', '@/dir/otherDir/@/myFile.js'],
 ]
+
+var origResolveSync = resolve.sync
+function mockResolveSync(id) {
+  if (installedPackages.includes(id)) {
+    return true
+  }
+  return origResolveSync(id)
+}
+simple.mock(resolve, 'sync').callFn(mockResolveSync)
 
 function buildImportStmt(specifier, source, isDynamic) {
   if (specifier) {
