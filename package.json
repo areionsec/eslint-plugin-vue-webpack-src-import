@@ -14,6 +14,7 @@
   "author": "Hod Bin Noon",
   "main": "lib/index.js",
   "scripts": {
+    "lint": "eslint '**/*.js' --ignore-pattern node_modules/",
     "test": "mocha tests --recursive",
     "coverage": "nyc mocha tests --recursive"
   },
@@ -30,7 +31,7 @@
     "nyc": "^15.1.0"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": "^10.12.0 || >=12.0.0"
   },
   "license": "MIT"
 }
